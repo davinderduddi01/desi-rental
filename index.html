@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desi Rental</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; background:#f4f4f4; }
+header { background:#ff6600; color:#fff; padding:10px; text-align:center; }
+.container { padding:20px; max-width:1200px; margin:auto; }
+h2 { color:#333; }
+input, select, textarea { padding:8px; margin:5px 0; width:100%; }
+button { padding:10px 20px; background:#ff6600; color:#fff; border:none; cursor:pointer; margin:5px 0; }
+section { background:#fff; padding:15px; margin-bottom:20px; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+table { width:100%; border-collapse: collapse; margin-top:10px; }
+th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+canvas { border:1px solid #ddd; margin-top:10px; }
+</style>
+</head>
+<body>
+<header>
+<h1>Desi Rental</h1>
+</header>
+<div class="container">
+
+<!-- Bikes Section -->
+<section>
+<h2>Bikes</h2>
+<input type="text" id="bikeName" placeholder="Bike Name">
+<input type="number" id="rate1" placeholder="Rate Option 1 (weekly)">
+<input type="number" id="rate2" placeholder="Rate Option 2 (weekly)">
+<button onclick="addBike()">Add Bike</button>
+<table id="bikesTable">
+<tr><th>Name</th><th>Rate1</th><th>Rate2</th></tr>
+</table>
+</section>
+
+<!-- Clients Section -->
+<section>
+<h2>Clients</h2>
+<input type="text" id="clientName" placeholder="Client Name">
+<input type="text" id="clientPhone" placeholder="Mobile">
+<input type="text" id="clientAddress" placeholder="Address">
+<button onclick="addClient()">Add Client</button>
+<table id="clientsTable">
+<tr><th>Name</th><th>Mobile</th><th>Address</th></tr>
+</table>
+</section>
+
+<!-- Rentals Section -->
+<section>
+<h2>Rentals</h2>
+<select id="rentalBike"></select>
+<select id="rentalClient"></select>
+<select id="rentalRate"><option value="1">Rate 1</option><option value="2">Rate 2</option></select>
+<input type="number" id="weeks" placeholder="Weeks">
+<button onclick="addRental()">Add Rental</button>
+<table id="rentalsTable">
+<tr><th>Bike</th><th>Client</th><th>Rate</th><th>Weeks</th><th>Total</th></tr>
+</table>
+</section>
+
+<!-- eSign Section -->
+<section>
+<h2>Rental Agreement eSign</h2>
+<canvas id="signCanvas" width="400" height="150"></canvas><br>
+<button onclick="clearSign()">Clear</button>
+<button onclick="saveSign()">Save Signature</button>
+<img id="savedSign" style="margin-top:10px;">
+</section>
+
+</div>
+
+<script>
+// Data arrays
+let bikes = [];
+let clients = [];
+let rentals = [];
+
+// Bikes
+function addBike(){
+    const name = document.getElementById('bikeName').value;
+    const rate1 = Number(document.getElementById('rate1').value);
+    const rate2 = Number(document.getElementById('rate2').value);
+    if(!name) return alert("Enter bike name");
+    bikes.push({name, rate1, rate2});
+    renderBikes();
+}
+function renderBikes(){
+    const table = document.getElementById('bikesTable');
+    table.innerHTML="<tr><th>Name</th><th>Rate1</th><th>Rate2</th></tr>";
+    const select = document.getElementById('rentalBike');
+    select.innerHTML="";
+    bikes.forEach((b,i)=>{
+        const row = table.insertRow();
+        row.insertCell(0).innerText=b.name;
+        row.insertCell(1).innerText=b.rate1;
+        row.insertCell(2).innerText=b.rate2;
+        const opt = document.createElement('option');
+        opt.value=i; opt.text=b.name;
+        select.add(opt);
+    });
+}
+
+// Clients
+function addClient(){
+    const name = document.getElementById('clientName').value;
+    const phone = document.getElementById('clientPhone').value;
+    const address = document.getElementById('clientAddress').value;
+    if(!name) return alert("Enter client name");
+    clients.push({name, phone, address});
+    renderClients();
+}
+function renderClients(){
+    const table = document.getElementById('clientsTable');
+    table.innerHTML="<tr><th>Name</th><th>Mobile</th><th>Address</th></tr>";
+    const select = document.getElementById('rentalClient');
+    select.innerHTML="";
+    clients.forEach((c,i)=>{
+        const row = table.insertRow();
+        row.insertCell(0).innerText=c.name;
+        row.insertCell(1).innerText=c.phone;
+        row.insertCell(2).innerText=c.address;
+        const opt = document.createElement('option');
+        opt.value=i; opt.text=c.name;
+        select.add(opt);
+    });
+}
+
+// Rentals
+function addRental(){
+    const bike = bikes[document.getElementById('rentalBike').value];
+    const client = clients[document.getElementById('rentalClient').value];
+    const rateOpt = document.getElementById('rentalRate').value;
+    const weeks = Number(document.getElementById('weeks').value);
+    if(!bike||!client||!weeks) return alert("Complete all fields");
+    const rate = rateOpt==1?bike.rate1:bike.rate2;
+    const total = rate*weeks;
+    rentals.push({bike:bike.name, client:client.name, rate, weeks, total});
+    renderRentals();
+}
+function renderRentals(){
+    const table = document.getElementById('rentalsTable');
+    table.innerHTML="<tr><th>Bike</th><th>Client</th><th>Rate</th><th>Weeks</th><th>Total</th></tr>";
+    rentals.forEach(r=>{
+        const row = table.insertRow();
+        row.insertCell(0).innerText=r.bike;
+        row.insertCell(1).innerText=r.client;
+        row.insertCell(2).innerText=r.rate;
+        row.insertCell(3).innerText=r.weeks;
+        row.insertCell(4).innerText=r.total;
+    });
+}
+
+// eSign
+const canvas = document.getElementById('signCanvas');
+const ctx = canvas.getContext('2d');
+let drawing=false;
+canvas.addEventListener('mousedown',()=>drawing=true);
+canvas.addEventListener('mouseup',()=>drawing=false);
+canvas.addEventListener('mousemove',draw);
+function draw(e){
+    if(!drawing) return;
+    const rect=canvas.getBoundingClientRect();
+    ctx.lineWidth=2;
+    ctx.lineCap="round";
+    ctx.strokeStyle="black";
+    ctx.lineTo(e.clientX-rect.left, e.clientY-rect.top);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX-rect.left, e.clientY-rect.top);
+}
+function clearSign(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+function saveSign(){
+    const img=document.getElementById('savedSign');
+    img.src=canvas.toDataURL();
+    alert("Signature saved!");
+}
+</script>
+</body>
+</html>

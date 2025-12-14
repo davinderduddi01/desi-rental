@@ -2,180 +2,180 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Desi Rental</title>
+<title>Desi Rental – Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body { font-family: Arial, sans-serif; margin: 0; padding: 0; background:#f4f4f4; }
-header { background:#ff6600; color:#fff; padding:10px; text-align:center; }
-.container { padding:20px; max-width:1200px; margin:auto; }
-h2 { color:#333; }
-input, select, textarea { padding:8px; margin:5px 0; width:100%; }
-button { padding:10px 20px; background:#ff6600; color:#fff; border:none; cursor:pointer; margin:5px 0; }
-section { background:#fff; padding:15px; margin-bottom:20px; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-table { width:100%; border-collapse: collapse; margin-top:10px; }
-th, td { border:1px solid #ddd; padding:8px; text-align:left; }
-canvas { border:1px solid #ddd; margin-top:10px; }
+body { background:#f5f6fa; }
+.sidebar {
+  height:100vh;
+  background:#111827;
+  color:#fff;
+  position:fixed;
+  width:220px;
+  padding:15px;
+}
+.sidebar h4 { color:#fff; }
+.sidebar a {
+  color:#9ca3af;
+  display:block;
+  padding:10px;
+  text-decoration:none;
+  border-radius:6px;
+}
+.sidebar a:hover { background:#1f2937; color:#fff; }
+.main {
+  margin-left:240px;
+  padding:20px;
+}
+.card { border:none; border-radius:12px; }
 </style>
 </head>
+
 <body>
-<header>
-<h1>Desi Rental</h1>
-</header>
-<div class="container">
 
-<!-- Bikes Section -->
-<section>
-<h2>Bikes</h2>
-<input type="text" id="bikeName" placeholder="Bike Name">
-<input type="number" id="rate1" placeholder="Rate Option 1 (weekly)">
-<input type="number" id="rate2" placeholder="Rate Option 2 (weekly)">
-<button onclick="addBike()">Add Bike</button>
-<table id="bikesTable">
-<tr><th>Name</th><th>Rate1</th><th>Rate2</th></tr>
-</table>
+<div class="sidebar">
+  <h4>Desi Rental</h4>
+  <a href="#dashboard">Dashboard</a>
+  <a href="#bikes">Bikes</a>
+  <a href="#clients">Clients</a>
+  <a href="#rentals">Rentals</a>
+  <a href="#payments">Payments</a>
+  <a href="#service">Service</a>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Total Bikes</h6>
+      <h3 id="bikeCount">0</h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Clients</h6>
+      <h3 id="clientCount">0</h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Active Rentals</h6>
+      <h3 id="rentalCount">0</h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Total Revenue</h6>
+      <h3>$<span id="revenue">0</span></h3>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4 p-3">
+<canvas id="chart"></canvas>
+</div>
 </section>
 
-<!-- Clients Section -->
-<section>
-<h2>Clients</h2>
-<input type="text" id="clientName" placeholder="Client Name">
-<input type="text" id="clientPhone" placeholder="Mobile">
-<input type="text" id="clientAddress" placeholder="Address">
-<button onclick="addClient()">Add Client</button>
-<table id="clientsTable">
-<tr><th>Name</th><th>Mobile</th><th>Address</th></tr>
-</table>
+<hr>
+
+<!-- BIKES -->
+<section id="bikes">
+<h4>Bikes</h4>
+<input class="form-control mb-2" id="bikeName" placeholder="Bike name">
+<input class="form-control mb-2" id="rate1" placeholder="Rate option 1">
+<input class="form-control mb-2" id="rate2" placeholder="Rate option 2">
+<button class="btn btn-dark" onclick="addBike()">Add Bike</button>
+<ul class="list-group mt-2" id="bikeList"></ul>
 </section>
 
-<!-- Rentals Section -->
-<section>
-<h2>Rentals</h2>
-<select id="rentalBike"></select>
-<select id="rentalClient"></select>
-<select id="rentalRate"><option value="1">Rate 1</option><option value="2">Rate 2</option></select>
-<input type="number" id="weeks" placeholder="Weeks">
-<button onclick="addRental()">Add Rental</button>
-<table id="rentalsTable">
-<tr><th>Bike</th><th>Client</th><th>Rate</th><th>Weeks</th><th>Total</th></tr>
-</table>
+<hr>
+
+<!-- CLIENTS -->
+<section id="clients">
+<h4>Clients</h4>
+<input class="form-control mb-2" id="clientName" placeholder="Client name">
+<input class="form-control mb-2" id="clientPhone" placeholder="Phone">
+<button class="btn btn-dark" onclick="addClient()">Add Client</button>
+<ul class="list-group mt-2" id="clientList"></ul>
 </section>
 
-<!-- eSign Section -->
-<section>
-<h2>Rental Agreement eSign</h2>
-<canvas id="signCanvas" width="400" height="150"></canvas><br>
-<button onclick="clearSign()">Clear</button>
-<button onclick="saveSign()">Save Signature</button>
-<img id="savedSign" style="margin-top:10px;">
+<hr>
+
+<!-- RENTALS -->
+<section id="rentals">
+<h4>Rentals</h4>
+<select class="form-control mb-2" id="rentBike"></select>
+<select class="form-control mb-2" id="rentClient"></select>
+<select class="form-control mb-2" id="rentRate">
+  <option value="1">Rate 1</option>
+  <option value="2">Rate 2</option>
+</select>
+<input class="form-control mb-2" id="weeks" placeholder="Weeks">
+<button class="btn btn-dark" onclick="addRental()">Add Rental</button>
+<ul class="list-group mt-2" id="rentalList"></ul>
 </section>
 
 </div>
 
 <script>
-// Data arrays
-let bikes = [];
-let clients = [];
-let rentals = [];
+let bikes=[], clients=[], rentals=[];
 
-// Bikes
 function addBike(){
-    const name = document.getElementById('bikeName').value;
-    const rate1 = Number(document.getElementById('rate1').value);
-    const rate2 = Number(document.getElementById('rate2').value);
-    if(!name) return alert("Enter bike name");
-    bikes.push({name, rate1, rate2});
-    renderBikes();
-}
-function renderBikes(){
-    const table = document.getElementById('bikesTable');
-    table.innerHTML="<tr><th>Name</th><th>Rate1</th><th>Rate2</th></tr>";
-    const select = document.getElementById('rentalBike');
-    select.innerHTML="";
-    bikes.forEach((b,i)=>{
-        const row = table.insertRow();
-        row.insertCell(0).innerText=b.name;
-        row.insertCell(1).innerText=b.rate1;
-        row.insertCell(2).innerText=b.rate2;
-        const opt = document.createElement('option');
-        opt.value=i; opt.text=b.name;
-        select.add(opt);
-    });
+  bikes.push({
+    name:bikeName.value,
+    r1:+rate1.value,
+    r2:+rate2.value
+  });
+  bikeName.value=rate1.value=rate2.value="";
+  render();
 }
 
-// Clients
 function addClient(){
-    const name = document.getElementById('clientName').value;
-    const phone = document.getElementById('clientPhone').value;
-    const address = document.getElementById('clientAddress').value;
-    if(!name) return alert("Enter client name");
-    clients.push({name, phone, address});
-    renderClients();
-}
-function renderClients(){
-    const table = document.getElementById('clientsTable');
-    table.innerHTML="<tr><th>Name</th><th>Mobile</th><th>Address</th></tr>";
-    const select = document.getElementById('rentalClient');
-    select.innerHTML="";
-    clients.forEach((c,i)=>{
-        const row = table.insertRow();
-        row.insertCell(0).innerText=c.name;
-        row.insertCell(1).innerText=c.phone;
-        row.insertCell(2).innerText=c.address;
-        const opt = document.createElement('option');
-        opt.value=i; opt.text=c.name;
-        select.add(opt);
-    });
+  clients.push({name:clientName.value, phone:clientPhone.value});
+  clientName.value=clientPhone.value="";
+  render();
 }
 
-// Rentals
 function addRental(){
-    const bike = bikes[document.getElementById('rentalBike').value];
-    const client = clients[document.getElementById('rentalClient').value];
-    const rateOpt = document.getElementById('rentalRate').value;
-    const weeks = Number(document.getElementById('weeks').value);
-    if(!bike||!client||!weeks) return alert("Complete all fields");
-    const rate = rateOpt==1?bike.rate1:bike.rate2;
-    const total = rate*weeks;
-    rentals.push({bike:bike.name, client:client.name, rate, weeks, total});
-    renderRentals();
-}
-function renderRentals(){
-    const table = document.getElementById('rentalsTable');
-    table.innerHTML="<tr><th>Bike</th><th>Client</th><th>Rate</th><th>Weeks</th><th>Total</th></tr>";
-    rentals.forEach(r=>{
-        const row = table.insertRow();
-        row.insertCell(0).innerText=r.bike;
-        row.insertCell(1).innerText=r.client;
-        row.insertCell(2).innerText=r.rate;
-        row.insertCell(3).innerText=r.weeks;
-        row.insertCell(4).innerText=r.total;
-    });
+  let b=bikes[rentBike.value];
+  let c=clients[rentClient.value];
+  let rate=rentRate.value==1?b.r1:b.r2;
+  let total=rate*weeks.value;
+  rentals.push({bike:b.name, client:c.name, total});
+  weeks.value="";
+  render();
 }
 
-// eSign
-const canvas = document.getElementById('signCanvas');
-const ctx = canvas.getContext('2d');
-let drawing=false;
-canvas.addEventListener('mousedown',()=>drawing=true);
-canvas.addEventListener('mouseup',()=>drawing=false);
-canvas.addEventListener('mousemove',draw);
-function draw(e){
-    if(!drawing) return;
-    const rect=canvas.getBoundingClientRect();
-    ctx.lineWidth=2;
-    ctx.lineCap="round";
-    ctx.strokeStyle="black";
-    ctx.lineTo(e.clientX-rect.left, e.clientY-rect.top);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(e.clientX-rect.left, e.clientY-rect.top);
+function render(){
+  bikeList.innerHTML=bikes.map(b=>`<li class="list-group-item">${b.name}</li>`).join("");
+  clientList.innerHTML=clients.map(c=>`<li class="list-group-item">${c.name}</li>`).join("");
+  rentalList.innerHTML=rentals.map(r=>`<li class="list-group-item">${r.bike} → ${r.client} : $${r.total}</li>`).join("");
+
+  rentBike.innerHTML=bikes.map((b,i)=>`<option value="${i}">${b.name}</option>`).join("");
+  rentClient.innerHTML=clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join("");
+
+  bikeCount.innerText=bikes.length;
+  clientCount.innerText=clients.length;
+  rentalCount.innerText=rentals.length;
+  revenue.innerText=rentals.reduce((s,r)=>s+r.total,0);
+
+  chart.data.datasets[0].data=[bikes.length,clients.length,rentals.length];
+  chart.update();
 }
-function clearSign(){ctx.clearRect(0,0,canvas.width,canvas.height);}
-function saveSign(){
-    const img=document.getElementById('savedSign');
-    img.src=canvas.toDataURL();
-    alert("Signature saved!");
-}
+
+const chart=new Chart(document.getElementById("chart"),{
+  type:"bar",
+  data:{
+    labels:["Bikes","Clients","Rentals"],
+    datasets:[{data:[0,0,0], backgroundColor:"#111827"}]
+  }
+});
 </script>
+
 </body>
 </html>

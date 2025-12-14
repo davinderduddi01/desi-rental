@@ -1,180 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Desi Rental – Dashboard</title>
+<title>Desi Rental – Pro Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-body { background:#f5f6fa; }
-.sidebar {
-  height:100vh;
-  background:#111827;
-  color:#fff;
-  position:fixed;
-  width:220px;
-  padding:15px;
-}
-.sidebar h4 { color:#fff; }
-.sidebar a {
-  color:#9ca3af;
-  display:block;
-  padding:10px;
-  text-decoration:none;
-  border-radius:6px;
-}
-.sidebar a:hover { background:#1f2937; color:#fff; }
-.main {
-  margin-left:240px;
-  padding:20px;
-}
-.card { border:none; border-radius:12px; }
+body{background:#f4f6f9}
+.sidebar{width:230px;height:100vh;position:fixed;background:#111827;color:white;padding:15px}
+.sidebar a{color:#9ca3af;display:block;padding:10px;border-radius:6px;text-decoration:none}
+.sidebar a:hover{background:#1f2937;color:white}
+.main{margin-left:250px;padding:20px}
+.card{border-radius:12px}
 </style>
 </head>
 
 <body>
 
 <div class="sidebar">
-  <h4>Desi Rental</h4>
-  <a href="#dashboard">Dashboard</a>
-  <a href="#bikes">Bikes</a>
-  <a href="#clients">Clients</a>
-  <a href="#rentals">Rentals</a>
-  <a href="#payments">Payments</a>
-  <a href="#service">Service</a>
+<h4>Desi Rental</h4>
+<a onclick="show('dash')">Dashboard</a>
+<a onclick="show('bikes')">Bikes</a>
+<a onclick="show('clients')">Clients</a>
+<a onclick="show('rentals')">Rentals</a>
 </div>
 
 <div class="main">
 
 <!-- DASHBOARD -->
-<section id="dashboard">
+<div id="dash">
 <div class="row g-3">
-  <div class="col-md-3">
-    <div class="card p-3">
-      <h6>Total Bikes</h6>
-      <h3 id="bikeCount">0</h3>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card p-3">
-      <h6>Clients</h6>
-      <h3 id="clientCount">0</h3>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card p-3">
-      <h6>Active Rentals</h6>
-      <h3 id="rentalCount">0</h3>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card p-3">
-      <h6>Total Revenue</h6>
-      <h3>$<span id="revenue">0</span></h3>
-    </div>
-  </div>
+<div class="col-md-3"><div class="card p-3"><h6>Bikes</h6><h3 id="dbikes">0</h3></div></div>
+<div class="col-md-3"><div class="card p-3"><h6>Clients</h6><h3 id="dclients">0</h3></div></div>
+<div class="col-md-3"><div class="card p-3"><h6>Active Rentals</h6><h3 id="drentals">0</h3></div></div>
+<div class="col-md-3"><div class="card p-3"><h6>Revenue</h6><h3>$<span id="drevenue">0</span></h3></div></div>
 </div>
-
-<div class="card mt-4 p-3">
-<canvas id="chart"></canvas>
+<canvas id="chart" class="mt-4"></canvas>
 </div>
-</section>
-
-<hr>
 
 <!-- BIKES -->
-<section id="bikes">
-<h4>Bikes</h4>
-<input class="form-control mb-2" id="bikeName" placeholder="Bike name">
-<input class="form-control mb-2" id="rate1" placeholder="Rate option 1">
-<input class="form-control mb-2" id="rate2" placeholder="Rate option 2">
-<button class="btn btn-dark" onclick="addBike()">Add Bike</button>
-<ul class="list-group mt-2" id="bikeList"></ul>
-</section>
-
-<hr>
+<div id="bikes" style="display:none">
+<h4>Add Bike</h4>
+<input id="bname" class="form-control mb-2" placeholder="Bike name">
+<input id="rego" class="form-control mb-2" placeholder="Rego expiry">
+<input id="ins" class="form-control mb-2" placeholder="Insurance expiry">
+<input id="r1" class="form-control mb-2" placeholder="Rate option 1">
+<input id="r2" class="form-control mb-2" placeholder="Rate option 2">
+<button class="btn btn-dark" onclick="addBike()">Save Bike</button>
+<ul class="list-group mt-3" id="bikeList"></ul>
+</div>
 
 <!-- CLIENTS -->
-<section id="clients">
-<h4>Clients</h4>
-<input class="form-control mb-2" id="clientName" placeholder="Client name">
-<input class="form-control mb-2" id="clientPhone" placeholder="Phone">
-<button class="btn btn-dark" onclick="addClient()">Add Client</button>
-<ul class="list-group mt-2" id="clientList"></ul>
-</section>
-
-<hr>
+<div id="clients" style="display:none">
+<h4>Add Client</h4>
+<input id="cname" class="form-control mb-2" placeholder="Client name">
+<input id="cphone" class="form-control mb-2" placeholder="Phone">
+<button class="btn btn-dark" onclick="addClient()">Save Client</button>
+<ul class="list-group mt-3" id="clientList"></ul>
+</div>
 
 <!-- RENTALS -->
-<section id="rentals">
-<h4>Rentals</h4>
-<select class="form-control mb-2" id="rentBike"></select>
-<select class="form-control mb-2" id="rentClient"></select>
-<select class="form-control mb-2" id="rentRate">
-  <option value="1">Rate 1</option>
-  <option value="2">Rate 2</option>
+<div id="rentals" style="display:none">
+<h4>New Rental</h4>
+<select id="rbike" class="form-control mb-2"></select>
+<select id="rclient" class="form-control mb-2"></select>
+<input id="start" type="date" class="form-control mb-2">
+<input id="end" type="date" class="form-control mb-2">
+<select id="rateopt" class="form-control mb-2">
+<option value="1">Rate 1</option>
+<option value="2">Rate 2</option>
 </select>
-<input class="form-control mb-2" id="weeks" placeholder="Weeks">
-<button class="btn btn-dark" onclick="addRental()">Add Rental</button>
-<ul class="list-group mt-2" id="rentalList"></ul>
-</section>
+<button class="btn btn-dark" onclick="addRental()">Create Rental</button>
+<ul class="list-group mt-3" id="rentalList"></ul>
+</div>
 
 </div>
 
 <script>
-let bikes=[], clients=[], rentals=[];
+let bikes=JSON.parse(localStorage.getItem("bikes")||"[]");
+let clients=JSON.parse(localStorage.getItem("clients")||"[]");
+let rentals=JSON.parse(localStorage.getItem("rentals")||"[]");
+
+function save(){localStorage.setItem("bikes",JSON.stringify(bikes));
+localStorage.setItem("clients",JSON.stringify(clients));
+localStorage.setItem("rentals",JSON.stringify(rentals));}
+
+function show(id){
+["dash","bikes","clients","rentals"].forEach(x=>document.getElementById(x).style.display="none");
+document.getElementById(id).style.display="block";
+}
 
 function addBike(){
-  bikes.push({
-    name:bikeName.value,
-    r1:+rate1.value,
-    r2:+rate2.value
-  });
-  bikeName.value=rate1.value=rate2.value="";
-  render();
+bikes.push({
+id:Date.now(),
+name:bname.value,
+rego,ins,
+r1:+r1.value,
+r2:+r2.value,
+status:"Available"
+});
+bname.value=r1.value=r2.value="";
+save();render();
 }
 
 function addClient(){
-  clients.push({name:clientName.value, phone:clientPhone.value});
-  clientName.value=clientPhone.value="";
-  render();
+clients.push({id:Date.now(),name:cname.value,phone:cphone.value});
+cname.value=cphone.value="";
+save();render();
 }
 
 function addRental(){
-  let b=bikes[rentBike.value];
-  let c=clients[rentClient.value];
-  let rate=rentRate.value==1?b.r1:b.r2;
-  let total=rate*weeks.value;
-  rentals.push({bike:b.name, client:c.name, total});
-  weeks.value="";
-  render();
+let b=bikes.find(x=>x.id==rbike.value);
+let c=clients.find(x=>x.id==rclient.value);
+let rate=rateopt.value==1?b.r1:b.r2;
+let weeks=Math.ceil((new Date(end.value)-new Date(start.value))/604800000);
+let total=weeks*rate;
+rentals.push({bike:b.id,client:c.id,start:start.value,end:end.value,total});
+b.status="Rented";
+save();render();
 }
 
 function render(){
-  bikeList.innerHTML=bikes.map(b=>`<li class="list-group-item">${b.name}</li>`).join("");
-  clientList.innerHTML=clients.map(c=>`<li class="list-group-item">${c.name}</li>`).join("");
-  rentalList.innerHTML=rentals.map(r=>`<li class="list-group-item">${r.bike} → ${r.client} : $${r.total}</li>`).join("");
+bikeList.innerHTML=bikes.map(b=>`<li class="list-group-item">${b.name} | ${b.status}</li>`).join("");
+clientList.innerHTML=clients.map(c=>`<li class="list-group-item">${c.name}</li>`).join("");
+rentalList.innerHTML=rentals.map(r=>{
+let b=bikes.find(x=>x.id==r.bike);
+let c=clients.find(x=>x.id==r.client);
+return `<li class="list-group-item">${b.name} → ${c.name} | $${r.total}</li>`;
+}).join("");
 
-  rentBike.innerHTML=bikes.map((b,i)=>`<option value="${i}">${b.name}</option>`).join("");
-  rentClient.innerHTML=clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join("");
+rbike.innerHTML=bikes.map(b=>`<option value="${b.id}">${b.name}</option>`).join("");
+rclient.innerHTML=clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
 
-  bikeCount.innerText=bikes.length;
-  clientCount.innerText=clients.length;
-  rentalCount.innerText=rentals.length;
-  revenue.innerText=rentals.reduce((s,r)=>s+r.total,0);
+dbikes.innerText=bikes.length;
+dclients.innerText=clients.length;
+drentals.innerText=rentals.length;
+drevenue.innerText=rentals.reduce((s,r)=>s+r.total,0);
 
-  chart.data.datasets[0].data=[bikes.length,clients.length,rentals.length];
-  chart.update();
+chart.data.datasets[0].data=[bikes.length,clients.length,rentals.length];
+chart.update();
 }
 
 const chart=new Chart(document.getElementById("chart"),{
-  type:"bar",
-  data:{
-    labels:["Bikes","Clients","Rentals"],
-    datasets:[{data:[0,0,0], backgroundColor:"#111827"}]
-  }
+type:"bar",
+data:{labels:["Bikes","Clients","Rentals"],
+datasets:[{data:[0,0,0],backgroundColor:"#111827"}]}
 });
+
+render();
 </script>
 
 </body>
